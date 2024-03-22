@@ -3,7 +3,7 @@ module fill_ram #
 
     parameter DW = 512,
     parameter AW = 16,
-    parameter FIRST_DATA = 32'h8000_0000
+    parameter FIRST_DATA = 32'hC000_0000
 
 )
 (

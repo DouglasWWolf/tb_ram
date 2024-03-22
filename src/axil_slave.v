@@ -16,7 +16,11 @@ module axil_slave
 (
     input clk, resetn,
 
-    output reg start,
+    output reg start_fill,
+
+    output reg        start_read,
+    output reg [31:0] read_addr,
+
 
     //================== This is an AXI4-Lite slave interface ==================
         
@@ -51,13 +55,10 @@ module axil_slave
     //==========================================================================
 );  
 
-// Any time the register map of this module changes, this number should
-// be bumped
-localparam MODULE_VERSION = 1;
 
 //=========================  AXI Register Map  =============================
-localparam REG_MODULE_REV       = 0;
-localparam REG_SCRATCH          = 1;
+localparam REG_FILL       = 0;
+localparam REG_READ       = 1;
 //==========================================================================
 
 
@@ -107,7 +108,8 @@ reg[31:0] scratch;
 //==========================================================================
 always @(posedge clk) begin
 
-    start <= 0;
+    start_fill <= 0;
+    start_read <= 0;
     
     // If we're in reset, initialize important registers
     if (resetn == 0) begin
@@ -124,10 +126,15 @@ always @(posedge clk) begin
                 // Convert the byte address into a register index
                 case (ashi_windx)
                
-                    REG_SCRATCH:
+                    REG_FILL:
                         begin
-                            scratch <= ashi_wdata;
-                            start   <= 1;
+                            start_fill <= 1;
+                        end
+
+                    REG_READ:
+                        begin
+                            read_addr  <= ashi_wdata * 4096;
+                            start_read <= 1;
                         end
 
                     // Writes to any other register are a decode-error
@@ -164,8 +171,7 @@ always @(posedge clk) begin
         case (ashi_rindx)
             
             // Allow a read from any valid register                
-            REG_MODULE_REV:     ashi_rdata <= MODULE_VERSION;
-            REG_SCRATCH:        ashi_rdata <= scratch;
+            0:     ashi_rdata <= 314159;
             
             // Reads of any other register are a decode-error
             default: ashi_rresp <= DECERR;

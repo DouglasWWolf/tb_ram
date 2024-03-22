@@ -41,15 +41,15 @@ module sdp_ram #
 
 
 if (RAM_TYPE == "distributed") begin : ram_scope
-    (* ram_style = "distributed" *)reg [DW-1:0] RAM [DD-1:0];
+    (* ram_style = "distributed" *) reg [DW-1:0] RAM [DD-1:0];
 end : ram_scope
 
 if (RAM_TYPE == "block") begin : ram_scope
-    (* ram_style = "block" *)reg [DW-1:0] RAM [DD-1:0];
+    (* ram_style = "block" *) reg [DW-1:0] RAM [DD-1:0];
 end : ram_scope
 
 if (RAM_TYPE == "ultra") begin : ram_scope
-    (* ram_style = "ultra" *)reg [DW-1:0] RAM [DD-1:0];
+    (* ram_style = "ultra" *) reg [DW-1:0] RAM [DD-1:0];
 end : ram_scope
 
 always @(posedge clk) begin
